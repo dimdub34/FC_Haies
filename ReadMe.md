@@ -29,7 +29,7 @@ Une implémentation visuelle du BRET pour mesurer l'aversion au risque des parti
 
 ## 🚀 Installation
 - Python 3.9+ installé.
-- Clonez le dépôt : `clone https://github.com/votre-compte/votre-depot.git`
+- Clonez le dépôt : `clone https://github.com/dimdub34/FC_Haies.git`
 - Installez oTree : `pip install otree`
 - Lancez le serveur local : `otree devserver`
 
