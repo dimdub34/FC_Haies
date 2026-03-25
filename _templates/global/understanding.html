@@ -1,0 +1,135 @@
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'global/css/style.css' }}">
+{{ endblock }}
+
+{{ block title }}
+Questionnaire de compréhension
+{{ endblock }}
+
+{{ block content }}
+
+<div class="text-end mb-3">
+    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modal_content">
+        <i class="bi bi-info-circle"></i> Instructions
+    </button>
+</div>
+
+<div class="mb-3">
+    {{ for question in understanding }}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+            <strong>Question {{ forloop.counter }}</strong> : {{ question.question|safe }}
+        </div>
+
+        <div class="list-group list-group-flush">
+            {{ for prop in question.propositions }}
+            <label class="list-group-item list-group-item-action border-0 py-3"
+                   for="{{ question.id }}_{{ forloop.counter }}">
+                <div class="form-check">
+                    <input type="radio" name="q_{{ question.id }}" value="{{ forloop.counter0 }}"
+                           id="{{ question.id }}_{{ forloop.counter }}" class="form-check-input" required/>
+                    <span class="ms-2">{{ prop }}</span>
+                </div>
+            </label>
+            {{ endfor }}
+        </div>
+
+        <div class="card-footer border-0 p-0">
+            <div class="alert alert-danger m-0 rounded-0" style="display: none;" id="error_{{ question.id }}">
+                <i class="bi bi-x-circle-fill"></i>
+                Ce n'est pas la bonne réponse. Veuillez relire les instructions.
+            </div>
+            <div class="alert alert-success m-0 rounded-0" style="display: none;" id="success_{{ question.id }}">
+                <i class="bi bi-check-circle-fill"></i> Correct !
+            </div>
+        </div>
+    </div>
+    {{ endfor }}
+</div>
+{{ next_button }}
+
+{{ for field in form }}
+<input type="hidden" name="{{ field.name }}" value="0"/>
+{{ endfor }}
+
+{{ include_sibling "instructions_modal.html" }}
+
+{{ endblock }}
+
+{{ block scripts }}
+<script>
+    const questionnaire = js_vars.understanding;
+    let isValidated = false; // État de validation globale
+    const nextBtn = document.querySelector(".otree-btn-next");
+
+    function fill_auto() {
+        // 1. On coche directement les bonnes réponses
+        questionnaire.forEach(question => {
+            const correctRadio = document.querySelector(`input[name="q_${question.id}"][value="${question.solution}"]`);
+            if (correctRadio) {
+                correctRadio.checked = true;
+            }
+        });
+
+        // 2. On simule le comportement du joueur (Validation + Soumission)
+        setTimeout(() => {
+            nextBtn.click(); // 1er clic : Vérifie et passe le bouton en vert
+
+            setTimeout(() => {
+                nextBtn.click(); // 2ème clic : Soumet le formulaire à oTree
+            }, 2000); // Petit délai de 400ms pour voir le bouton vert brièvement
+        }, 100);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        function checkAnswers() {
+            let allCorrect = true;
+
+            questionnaire.forEach(question => {
+                const selectedOption = document.querySelector(`input[name="q_${question.id}"]:checked`);
+                const errorField = document.getElementById(`error_${question.id}`);
+                const successField = document.getElementById(`success_${question.id}`);
+                const hiddenInput = document.querySelector(`input[name*="q${question.id}_faults"]`);
+
+                if (selectedOption) {
+                    if (Number(selectedOption.value) !== Number(question.solution)) {
+                        allCorrect = false;
+                        if (hiddenInput) hiddenInput.value = parseInt(hiddenInput.value) + 1;
+                        errorField.style.display = 'block';
+                        successField.style.display = 'none';
+                    } else {
+                        errorField.style.display = 'none';
+                        successField.style.display = 'block';
+                    }
+                } else {
+                    allCorrect = false;
+                    errorField.style.display = 'block';
+                }
+            });
+
+            if (allCorrect) {
+                // ÉTAPE 1 : On ne soumet pas encore, on transforme le bouton
+                isValidated = true;
+                nextBtn.innerHTML = "Tout est correct ! Continuer <i class='bi bi-arrow-right-short'></i>";
+                nextBtn.classList.add('btn-success-validation');
+                nextBtn.scrollIntoView({behavior: 'smooth', block: 'center'});
+            }
+        }
+
+        nextBtn.addEventListener("click", function (event) {
+            if (!isValidated) {
+                // si erreur
+                event.preventDefault();
+                checkAnswers();
+            } else {
+                // L'action par défaut du bouton (submit) s'exécute ici
+            }
+        });
+
+        if (js_vars?.fill_auto) {
+            fill_auto();
+        }
+    });
+</script>
+{{ endblock }}

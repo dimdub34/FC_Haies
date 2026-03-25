@@ -1,0 +1,99 @@
+#table_boites {
+    border-collapse: collapse;
+    margin: 20px auto;
+}
+
+#table_boites tr {
+    border: none;
+}
+
+#table_boites td {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #6c757d;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    cursor: default;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+.cell-selected {
+    background-color: #007bff !important;
+    color: white !important;
+    border-color: #0056b3 !important;
+}
+
+/* --- SECTION SLIDER CORRIGÉE --- */
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 85%;
+    height: 15px; /* Épaisseur */
+    background: #e9ecef; /* Couleur de la piste */
+    border-radius: 10px;
+    outline: none;
+    opacity: 0.9;
+    transition: all 0.2s;
+    border: 1px solid #dee2e6;
+    margin: 20px 0;
+}
+
+.slider:hover {
+    opacity: 1;
+    background: #dee2e6;
+}
+
+/* Curseur (Chrome, Safari, Edge) */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+    border: 3px solid #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.1s ease;
+    margin-top: -2px; /* Centre le curseur sur la piste épaisse */
+}
+
+/* Curseur (Firefox) */
+.slider::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+    border: 3px solid #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.slider::-webkit-slider-thumb:active,
+.slider::-moz-range-thumb:active {
+    transform: scale(1.2);
+}
+
+/* page RESULTS */
+.cell-bomb {
+    background-color: #ffc107 !important; /* Jaune/Orange pour que la bombe ressorte */
+    border-color: #d39e00 !important;
+    padding: 2px !important;
+}
+
+.cell-explode {
+    background-color: #dc3545 !important; /* Rouge si elle a explosé */
+    border-color: #bd2130 !important;
+}
+
+.img-bomb {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: auto;
+}

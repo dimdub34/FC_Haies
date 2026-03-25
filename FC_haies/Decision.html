@@ -1,0 +1,356 @@
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'global/css/style.css' }}">
+<link rel="stylesheet" href="{{ static 'FC_haies/style.css' }}">
+{{ endblock }}
+
+{{ block title }}
+<span class="text-muted">Décision</span>
+{{ endblock }}
+
+{{ block content }}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="m-0">Période {{ player.round_number }} sur {{ C.NUM_ROUNDS }}</h5>
+    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modal_content">
+        <i class="bi bi-info-circle"></i> Instructions
+    </button>
+</div>
+
+<div class="alert alert-info shadow-sm mb-4">
+    <p class="mb-1">
+        Votre coût unitaire (tiré aléatoirement) : <strong class="fs-5">{{ player.cost }} €</strong>
+    </p>
+    <small class="text-muted">
+        <i class="bi bi-exclamation-triangle"></i> Vous ne savez pas encore dans quelle zone vous
+        serez affecté(e) lors de cette période.
+    </small>
+</div>
+
+{# TRAITEMENT BASE : un prix unitaire par zone. L'acheteur ne peut acheter qu'une unité à chaque vendeur d'une zone #}
+{{ if subsession.treatment == 'base' }}
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="text-muted mb-3">
+            Vous proposez un seul prix par zone. L’acheteur ne pourra acheter qu’une unité au
+            maximum auprès de vous.
+        </p>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Zone 1</label>
+                {{ form.unit_price_zone1 }}
+                {{ formfield_errors 'unit_price_zone1' }}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Zone 2</label>
+                {{ form.unit_price_zone2 }}
+                {{ formfield_errors 'unit_price_zone2' }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{# TRAITEMENT UNITAIRE : un prix unitaire par zone. L'acheteur peut acheter plusieurs unités à chaque vendeur d'une zone #}
+{{ elif subsession.treatment == 'unitaire' }}
+<div class="mb-4">
+    <p>
+        Vous proposez un prix unitaire par zone. Vous ne savez pas combien d'unités l'acheteur vous achètera.
+    </p>
+    <p class="text-muted small">
+        Déplacez le curseur ou saisissez votre prix.
+        Votre gain <strong>potentiel</strong>
+        s'affichera selon le nombre d’unités achetées, si c’est compatible avec
+        le budget de 200 de l'acheteur et si votre offre est retenue.
+    </p>
+
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body offer-block" data-field="unit_price_zone1" data-qmax="3">
+            <h5 class="card-title text-primary">Zone 1 <span class="badge border text-muted">Max 3 unités</span></h5>
+            <div class="d-flex align-items-center gap-3 mt-3">
+                <span class="offer-label">Votre prix unitaire :</span>
+                <input class="form-control offer-input" name="unit_price_zone1" type="number" min="{{ player.cost }}" max="201"
+                       step="1" value="{{ player.field_maybe_none('unit_price_zone1') }}">
+                <input class="form-range flex-grow-1 offer-slider" type="range" min="{{ player.cost }}" max="201" step="1">
+            </div>
+            <div class="profit-feedback"></div>
+            {{ formfield_errors 'unit_price_zone1' }}
+        </div>
+    </div>
+
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body offer-block" data-field="unit_price_zone2" data-qmax="2">
+            <h5 class="card-title text-primary">Zone 2 <span class="badge border text-muted">Max 2 unités</span></h5>
+            <div class="d-flex align-items-center gap-3 mt-3">
+                <span class="offer-label">Votre prix unitaire :</span>
+                <input class="form-control offer-input" name="unit_price_zone2" type="number" min="{{ player.cost }}" max="201"
+                       step="1" value="{{ player.field_maybe_none('unit_price_zone2') }}">
+                <input class="form-range flex-grow-1 offer-slider" type="range" min="{{ player.cost }}" max="201" step="1">
+            </div>
+            <div class="profit-feedback"></div>
+            {{ formfield_errors 'unit_price_zone2' }}
+        </div>
+    </div>
+</div>
+
+{{ else }}
+<div class="mb-4">
+    <p>Vous proposez des prix unitaires dépendant de la quantité.</p>
+    <p class="text-muted small">
+        Déplacez le curseur pour choisir votre prix ou saisissez-le directement.
+        Vous verrez votre gain <strong>potentiel </strong>selon le nombre d’unités achetées si c’est compatible
+        avec le budget de 200 € de l'acheteur et si votre offre est retenue.
+    </p>
+    <h5 class="mt-4">Zone 1</h5>
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <div class="offer-block mb-3" data-q="1">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="offer-label">Pour 1 unité :</span>
+                    <input class="form-control offer-input" name="offer_1u_zone1" type="number" min="{{ player.cost }}"
+                           max="201" value="{{ player.field_maybe_none('offer_1u_zone1') }}">
+                    <input class="form-range flex-grow-1 offer-slider" type="range" min="{{ player.cost }}" max="201">
+                </div>
+                <div class="profit-feedback"></div>
+                {{ formfield_errors 'offer_1u_zone1' }}
+            </div>
+
+            <div class="offer-block mb-3" data-q="2">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="offer-label">Pour 2 unités :</span>
+                    <input class="form-control offer-input" name="offer_2u_zone1" type="number" min="{{ player.cost }}"
+                           max="201" value="{{ player.field_maybe_none('offer_2u_zone1') }}">
+                    <input class="form-range flex-grow-1 offer-slider" type="range" min="{{ player.cost }}" max="201">
+                </div>
+                <div class="profit-feedback"></div>
+                {{ formfield_errors 'offer_2u_zone1' }}
+            </div>
+
+            <div class="offer-block" data-q="3">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="offer-label">Pour 3 unités :</span>
+                    <input class="form-control offer-input" name="offer_3u_zone1" type="number" min="{{ player.cost }}"
+                           max="201" value="{{ player.field_maybe_none('offer_3u_zone1') }}">
+                    <input class="form-range flex-grow-1 offer-slider" type="range" min="{{ player.cost }}" max="201">
+                </div>
+                <div class="profit-feedback"></div>
+                {{ formfield_errors 'offer_3u_zone1' }}
+            </div>
+        </div>
+    </div>
+
+    <h5 class="mt-4">Zone 2</h5>
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <div class="offer-block mb-3" data-q="1">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="offer-label">Pour 1 unité :</span>
+                    <input class="form-control offer-input" name="offer_1u_zone2" type="number" min="{{ player.cost }}"
+                           max="201" value="{{ player.field_maybe_none('offer_1u_zone2') }}">
+                    <input class="form-range flex-grow-1 offer-slider" type="range" min="{{ player.cost }}" max="201">
+                </div>
+                <div class="profit-feedback"></div>
+                {{ formfield_errors 'offer_1u_zone2' }}
+            </div>
+
+            <div class="offer-block" data-q="2">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="offer-label">Pour 2 unités :</span>
+                    <input class="form-control offer-input" name="offer_2u_zone2" type="number" min="{{ player.cost }}"
+                           max="201" value="{{ player.field_maybe_none('offer_2u_zone2') }}">
+                    <input class="form-range flex-grow-1 offer-slider" type="range" min="{{ player.cost }}" max="201">
+                </div>
+                <div class="profit-feedback"></div>
+                {{ formfield_errors 'offer_2u_zone2' }}
+            </div>
+        </div>
+    </div>
+</div>
+{{ endif }}
+
+<div class="text-center mt-5 mb-4">
+    <button class="btn btn-primary otree-btn-next"><i class="bi bi-check-circle"></i> Valider mes décisions</button>
+</div>
+
+{{ include "global/instructions_modal.html" }}
+
+{# la fenêtre modale #}
+<div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div id="modalHeader" class="modal-header text-white">
+                <h5 class="modal-title">
+                    <i id="modalIcon" class="bi"></i>
+                    <span id="modalTitleText"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <p id="alertText" class="fs-5 mb-0"></p>
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ endblock }}
+
+{{ block scripts }}
+<script>
+    const cost = js_vars.cost;
+    const budget = js_vars.BUYER_BUDGET;
+
+    function showAlert(message, title = "Attention", type = "primary") {
+        document.getElementById('alertText').innerText = message;
+        document.getElementById('modalTitleText').innerText = title;
+
+        const header = document.getElementById('modalHeader');
+        const icon = document.getElementById('modalIcon');
+
+        header.classList.remove('bg-primary', 'bg-danger', 'bg-warning', 'bg-info');
+        icon.classList.remove('bi-exclamation-triangle-fill', 'bi-info-circle-fill', 'bi-x-octagon-fill');
+
+        if (type === "danger") {
+            header.classList.add('bg-danger');
+            icon.classList.add('bi-x-octagon-fill');
+        } else if (type === "warning") {
+            header.classList.add('bg-warning');
+            icon.classList.add('bi-exclamation-triangle-fill');
+        } else {
+            header.classList.add('bg-primary');
+            icon.classList.add('bi-info-circle-fill');
+        }
+        const myModal = new bootstrap.Modal(document.getElementById('alertModal'));
+        myModal.show();
+    }
+
+    function fill_auto() {
+        // 2. Cibler tous les champs numériques oTree ou personnalisés
+        const inputs = document.querySelectorAll('input[type="number"]');
+
+        inputs.forEach(input => {
+            // 3. Générer un prix aléatoire valide (entre le coût de production et 200€)
+            // 4. Assigner la valeur au champ
+            input.value = Math.floor(Math.random() * (budget - cost + 1)) + cost;
+
+            // 5. Déclencher artificiellement l'événement 'input' pour synchroniser
+            //    le slider et lancer le calcul des gains potentiels
+            input.dispatchEvent(new Event('input', {bubbles: true}));
+        });
+        setTimeout(() => {
+            document.querySelector(".otree-btn-next").click();
+        }, 2000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        function formatCurrency(n) {
+            return (n >= 0 ? "" : "−") + Math.abs(n) + " €";
+        }
+
+        function renderFeedback(block, price) {
+            const feedbackDiv = block.querySelector('.profit-feedback');
+            if (!feedbackDiv) return;
+
+            if (isNaN(price) || price === "") {
+                feedbackDiv.innerHTML = "";
+                return;
+            }
+
+            if (price < cost) {
+                feedbackDiv.innerHTML = `<span class="text-danger fw-bold"><i class="bi bi-x-circle"></i> Offre invalide : prix inférieur au coût (${cost}€).</span>`;
+                return;
+            }
+
+            const qExact = block.getAttribute('data-q');
+            const qMax = block.getAttribute('data-qmax');
+            let htmlLines = [];
+
+            // Cas Combinatoire (quantité fixe)
+            if (qExact) {
+                const q = parseInt(qExact, 10);
+                const totalCost = q * price;
+                if (totalCost <= budget) {
+                    const profit = q * (price - cost);
+                    htmlLines.push(`<span class="text-success"><i class="bi bi-check-circle"></i> Gain si achetée(s) : <strong>${formatCurrency(profit)}</strong> (Dépense acheteur : ${totalCost}€)</span>`);
+                } else {
+                    htmlLines.push(`<span class="text-secondary"><i class="bi bi-dash-circle"></i> Hors budget (coût total : ${totalCost}€ > ${budget}€)</span>`);
+                }
+            }
+            // Cas Unitaire (quantités multiples possibles)
+            else if (qMax) {
+                const max = parseInt(qMax, 10);
+                for (let q = 1; q <= max; q++) {
+                    const totalCost = q * price;
+                    if (totalCost <= budget) {
+                        const profit = q * (price - cost);
+                        htmlLines.push(`<div class="text-success"><i class="bi bi-check-circle"></i> Gain si ${q} unité(s) : <strong>${formatCurrency(profit)}</strong> (Dépense : ${totalCost}€)</div>`);
+                    } else {
+                        htmlLines.push(`<div class="text-secondary"><i class="bi bi-dash-circle"></i> Si ${q} unités : Hors budget</div>`);
+                    }
+                }
+            }
+
+            feedbackDiv.innerHTML = htmlLines.join("");
+        }
+
+        // Initialisation et Synchronisation
+        document.querySelectorAll('.offer-block').forEach(block => {
+            const input = block.querySelector('.offer-input');
+            const slider = block.querySelector('.offer-slider');
+            if (!input || !slider) return;
+
+            // Synchroniser Input -> Slider -> Feedback
+            input.addEventListener('input', () => {
+                let val = parseInt(input.value, 10);
+                if (!isNaN(val)) {
+                    slider.value = Math.max(cost, val); // Le slider ne descend pas sous le coût
+                    renderFeedback(block, val);
+                } else {
+                    renderFeedback(block, "");
+                }
+            });
+
+            // Synchroniser Slider -> Input -> Feedback
+            slider.addEventListener('input', () => {
+                input.value = slider.value;
+                renderFeedback(block, parseInt(slider.value, 10));
+            });
+
+            // Initialisation au chargement
+            if (input.value) {
+                slider.value = input.value;
+                renderFeedback(block, parseInt(input.value, 10));
+            } else {
+                slider.value = cost; // Position par défaut si vide
+            }
+        });
+
+        // Validation basique à la soumission
+        const form = document.getElementById('form'); // oTree utilise id="form" par défaut
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                const inputs = form.querySelectorAll('.offer-input');
+                for (let inp of inputs) {
+                    const val = parseInt(inp.value, 10);
+                    if (isNaN(val)) {
+                        e.preventDefault();
+                        showAlert(`Vous ne pouvez pas laisser de cellule vide.`, "Erreur de saisie", "danger");
+                        inp.focus();
+                        return;
+                    }
+                    if (val < cost) {
+                        e.preventDefault();
+                        showAlert(`L'un de vos prix est inférieur à votre coût de ${cost}€.`, "Erreur de validation", "warning");
+                        inp.focus();
+                        return;
+                    }
+                }
+            });
+        }
+
+        if (js_vars?.fill_auto)
+            fill_auto();
+    });
+</script>
+{{ endblock }}

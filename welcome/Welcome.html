@@ -1,0 +1,98 @@
+{{ block title }}
+{{ endblock }}
+
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'welcome/style.css' }}">
+{{ endblock }}
+
+{{ block content }}
+<div class="container text-center py-5">
+
+    <figure class="mb-5">
+        <img src="{{ static 'global/img/LEEM.png' }}" alt="LEEM" class="leem-logo img-fluid">
+    </figure>
+
+    <div class="welcome-card mx-auto text-start" style="max-width: 850px;">
+        <h2 class="fw-bold mb-4 text-center">Bienvenue</h2>
+
+        <div class="instruction-highlight mb-4 shadow-sm">
+            <p class="mb-0">
+                L'expérience à laquelle vous allez participer est destinée à l'étude de la prise de décision.
+                Nous vous demandons de <strong>lire attentivement les instructions</strong>, elles doivent vous
+                permettre de bien comprendre l'expérience.
+            </p>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="text-center p-3">
+                    <i class="bi bi-shield-lock fs-1 text-primary mb-2"></i>
+                    <h6 class="fw-bold">Anonymat</h6>
+                    <p class="small text-muted">Vos décisions sont traitées de façon totalement anonyme.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-3">
+                    <i class="bi bi-mic-mute fs-1 text-danger mb-2"></i>
+                    <h6 class="fw-bold">Silence</h6>
+                    <p class="small text-muted">Merci de ne plus parler jusqu'à la fin de la session.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-3">
+                    <i class="bi bi-question-circle fs-1 text-warning mb-2"></i>
+                    <h6 class="fw-bold">Assistance</h6>
+                    <p class="small text-muted">Levez la main pour toute question, nous viendrons vous voir.</p>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="consent-section d-flex align-items-center justify-content-center mb-4">
+            <div class="form-check">
+                <input class="form-check-input me-3" type="checkbox" id="consent" name="consent">
+                <label class="form-check-label fw-bold" for="consent" style="cursor: pointer;">
+                    J'ai lu et j'accepte les conditions de l'expérience
+                </label>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+            {{ next_button }}
+        </div>
+    </div>
+</div>
+{{ endblock }}
+
+{{ block scripts }}
+<script>
+    const btn_next = document.querySelector(".otree-btn-next");
+    const consent = document.querySelector("#consent");
+
+    function fill_auto() {
+        consent.checked = true;
+        btn_next.disabled = false;
+        setTimeout(() => {
+            btn_next.click();
+        }, 1000);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // État initial
+        btn_next.disabled = true;
+        btn_next.classList.add('px-5', 'btn-lg'); // On agrandit le bouton
+
+        // Listener de clic
+        consent.addEventListener("change", function () {
+            btn_next.disabled = !consent.checked;
+        });
+
+        // Mode auto-remplissage pour tests
+        if (js_vars.fill_auto) {
+            fill_auto();
+        }
+    });
+</script>
+{{ endblock }}

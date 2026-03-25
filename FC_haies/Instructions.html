@@ -1,0 +1,335 @@
+<div class="instruction-card mb-4">
+    <div class="card-title-header">
+        <h3><i class="bi bi-info-circle-fill text-primary"></i> Principe du jeu</h3>
+    </div>
+    <div class="card-body">
+        <p class="mb-3">
+            Le programme informatique va former de manière aléatoire des groupes de {{ C.PLAYERS_PER_GROUP }} personnes
+            :
+            <strong class="text-primary">{{ C.PLAYERS_PER_GROUP }} vendeurs</strong>.
+            Vous ne pouvez pas identifier les autres membres de votre groupe et ces derniers ne peuvent
+            pas vous identifier. Ces groupes resteront inchangés tout au long de cette partie.
+        </p>
+        <p class="mb-3">
+            Les {{ C.PLAYERS_PER_GROUP }} vendeurs de chaque groupe seront répartis en
+            <strong class="text-primary">2 zones</strong> : une zone
+            1 composée de {{ C.PLAYERS_ZONE_1 }} vendeurs, et une zone 2 composée des {{ C.PLAYERS_ZONE_2 }} autres
+            vendeurs.
+        </p>
+        <p class="mb-4">
+            Face à chaque groupe, un <strong>acheteur</strong> unique est géré automatiquement par le programme
+            informatique (voir Figure 1).
+        </p>
+        <figure class="text-center mb-4">
+            <img src="{{ static 'FC_haies/figure_groupe.png' }}" class="img-fluid img-thumbnail rounded shadow-sm"
+                 style="max-width:50%;" alt="Schéma d’un groupe de vendeurs et de l’acheteur">
+            <figcaption class="fst-italic mt-2 text-muted">Figure 1 : Schéma d’un groupe de {{ C.PLAYERS_PER_GROUP }}
+                vendeurs
+            </figcaption>
+        </figure>
+        <p class="mb-3">
+            <strong>Votre objectif</strong> (comme celui des autres participants) est de <strong>maximiser votre
+            profit</strong> en vendant une ou plusieurs unités d’un bien à l’acheteur.
+        </p>
+        <p class="mb-3">
+            Vous êtes en concurrence avec les 4 autres vendeurs de votre groupe (pas seulement les
+            vendeurs de votre zone).
+        </p>
+        <p class="mb-3">
+            Le <strong>coût unitaire</strong> de production de chaque vendeur est constant quel que soit le nombre
+            d’unités vendues. Ce coût est tiré au sort pour chaque vendeur <strong class="text-primary">entre 50 et 100
+            €</strong>. Votre coût ne dépend pas du coût des autres vendeurs.
+        </p>
+        <p class="mb-3">
+            Le nombre d’unités achetées dans une zone ne peut pas dépasser le nombre de vendeurs dans
+            la zone : soit {{ C.PLAYERS_ZONE_1 }} unités dans la zone 1 et {{ C.PLAYERS_ZONE_2 }} unités dans la zone 2.
+        </p>
+        <p class="mb-0">
+            Un vendeur peut vendre plusieurs unités jusqu’à la capacité maximale de sa zone. Ainsi, selon
+            la décision de l’acheteur, un vendeur de la zone 1 peut être amené à produire 0, 1, 2 ou 3 unités
+            et un vendeur de la zone 2 peut être amené à produire 0, 1 ou 2 unités.
+        </p>
+    </div>
+</div>
+
+<div class="instruction-card mb-4">
+    <div class="card-title-header">
+        <h3><i class="bi bi-pencil-square text-primary"></i> Votre décision</h3>
+    </div>
+    <div class="card-body">
+        {{ if is_unit or is_base }}
+        <p class="mb-3">
+            Vous devez faire une <strong>offre de prix unitaire</strong> en fonction de votre coût unitaire de
+            production.
+            Vous ne pouvez pas définir un prix pour un lot d’unités.
+            C’est l’acheteur qui décide du nombre d’unités qu’il souhaite vous acheter.
+        </p>
+        <p class="mb-2">Remarques :</p>
+        <ul class="mb-4">
+            <li class="mb-1">Au moment de prendre votre décision, vous ne savez pas dans
+                quelle zone vous serez aléatoirement affecté, aussi vous devez répondre pour chacune des deux zones.
+            </li>
+            <li class="mb-1">Même si les vendeurs sont répartis en deux zones, les 5 vendeurs
+                du groupe sont en concurrence
+                les uns avec les autres. Autrement dit, vous êtes en concurrence à la fois avec les vendeurs
+                de votre zone et avec ceux de l’autre zone.
+            </li>
+            <li class="mb-1">Il ne vous est pas possible de proposer un prix unitaire
+                inférieur à votre coût de
+                production, car la vente à perte est interdite.
+            </li>
+            <li class="mb-1">
+                Si votre coût est trop élevé, compte-tenu de la contrainte de budget de l’acheteur (<strong
+                    class="text-primary">200 €</strong>),
+                il vous sera impossible de vendre 3 unités dans la zone 1.
+            </li>
+            <li>Vous disposerez toujours des présentes instructions sur cet écran
+                en cliquant sur un bouton « Voir/masquer les instructions » (en dessous de « Valider »).
+            </li>
+        </ul>
+        <p class="mb-3">
+            Voici un exemple d'écran de prise de décision (le coût tiré au sort est ici de 75 €) :
+        </p>
+        <figure class="text-center mb-4">
+            <img src="{{ static 'FC_haies/DecisionScreenUnit.png' }}"
+                 class="img-fluid img-thumbnail rounded shadow-sm" style="max-width:80%;">
+            <figcaption class="fst-italic mt-2 text-muted">Figure 2 : Exemple d’écran de décision</figcaption>
+        </figure>
+
+        {# is_base =================================================================================================== #}
+        {{ if is_base }}
+        <p class="alert alert-info mb-0">
+            Dans ce traitement, l’acheteur ne peut acheter <strong>au maximum qu’une unité par vendeur</strong>.
+        </p>
+        {{ endif }}
+        {{ endif }}
+
+        {{ if is_comb }}
+        <p class="mb-3">
+            Vous devez faire des <strong>offres de prix unitaires</strong> en fonction de votre coût unitaire de
+            production et du nombre d’unités.
+        </p>
+        <p class="mb-3">
+            Vous pouvez augmenter ou réduire le prix unitaire en fonction de la quantité,
+            ou garder le même prix unitaire. Vous êtes libre de fixer vos prix.
+            Toutefois, c’est l’acheteur qui décide du nombre d’unités qu’il souhaite vous acheter.
+        </p>
+        <p class="mb-2">Remarques :</p>
+        <ul class="mb-4">
+            <li class="mb-1">Au moment de prendre votre décision, vous ne savez pas dans
+                quelle zone vous serez
+                aléatoirement affecté, aussi vous devez répondre pour chacune des deux zones.
+            </li>
+            <li class="mb-1">Même si les vendeurs sont répartis en deux zones, les 5 vendeurs
+                du groupe sont en concurrence
+                les uns avec les autres. Autrement dit, vous êtes en concurrence à la fois avec les vendeurs
+                de votre zone et avec ceux de l’autre zone.
+            </li>
+            <li class="mb-1">Il ne vous est pas possible de proposer un prix unitaire
+                inférieur à votre coût de
+                production, car la vente à perte est interdite.
+            </li>
+            <li class="mb-1">
+                Si votre coût est trop élevé, compte-tenu de la contrainte de budget de l’acheteur (<strong
+                    class="text-primary">200 €</strong>),
+                il vous sera impossible de vendre 3 unités dans la zone 1. Dans ce cas, un message
+                « hors budget » s’affichera, mais pour des raisons techniques, nous vous demandons
+                néanmoins de saisir un prix si la situation se présente.
+            </li>
+            <li>Vous disposerez toujours des présentes instructions sur cet écran
+                en
+                cliquant sur un bouton « Voir/masquer les instructions » (en dessous de « Valider »).
+            </li>
+        </ul>
+        <p class="mb-3">
+            Voici un exemple d'écran de prise de décision (le coût tiré au sort est ici de 75) :
+        </p>
+        <figure class="text-center mb-0">
+            <img src="{{ static 'FC_haies/DecisionScreenCombin.png' }}"
+                 class="img-fluid img-thumbnail rounded shadow-sm" style="max-width:80%;">
+            <figcaption class="fst-italic mt-2 text-muted">Figure 2 : Exemple d’écran de décision</figcaption>
+        </figure>
+        {{ endif }}
+    </div>
+</div>
+
+<div class="instruction-card mb-4">
+    <div class="card-title-header">
+        <h3><i class="bi bi-cart-check-fill text-primary"></i> Objectif de l’acheteur</h3>
+        <h4 class="text-muted fs-5">(recherché automatiquement par le programme informatique)</h4>
+    </div>
+    <div class="card-body">
+        <p class="mb-3">
+            Dans chaque groupe, l’acheteur dispose d’un budget maximum de <strong class="text-primary">200 €</strong>
+            et cherche à acheter des unités de manière à maximiser l’efficacité de sa dépense.
+        </p>
+        <p class="mb-3">
+            L’acheteur ne peut acheter que des unités entières
+            (par exemple, il ne peut pas acheter des fractions d’unités).
+        </p>
+        <p class="mb-3">
+            L’acheteur retire une certaine valeur des unités achetées aux vendeurs.
+            Il préfère acheter plusieurs unités dans une même zone,
+            car la valeur qu'il en retire augmente avec le nombre d’unités achetées dans cette zone :
+        </p>
+        <ul class="mb-4">
+            <li class="mb-2">1 unité (isolée) achetée dans une zone crée pour l'acheteur
+                une valeur de <strong>100</strong> ;
+            </li>
+            <li class="mb-2">2 unités achetées dans une même zone créent une valeur de <strong>250 (2 x 100 +
+                50)</strong> ;
+            </li>
+            <li>3 unités achetées dans une même zone créent une valeur de <strong>375 (3 x 100 + 75)</strong>.</li>
+        </ul>
+        <p class="mb-3">
+            L’acheteur cherche à maximiser la valeur qu’il tire de ses achats par euro dépensé.
+            Autrement dit, il cherche à maximiser l’indicateur <strong>W</strong> calculé ainsi :
+        </p>
+        <div class="alert alert-secondary text-center fw-bold fs-5 mb-0">
+            W = Valeur totale créée / Montant total dépensé
+        </div>
+    </div>
+</div>
+
+<div class="instruction-card mb-4">
+    <div class="card-title-header">
+        <h3><i class="bi bi-award-fill text-primary"></i> Sélection de l’offre (ou des offres) gagnante(s) </h3>
+    </div>
+    <div class="card-body">
+        <p class="mb-3">
+            Dans chaque groupe, l’acheteur (le programme informatique ici) calcule toutes les
+            combinaisons possibles d'unités achetées aux différents vendeurs compatibles
+            avec la contrainte budgétaire de <strong class="text-primary">200 €</strong>, et retient celle qui maximise
+            <strong>W</strong>.
+            Il peut acheter une ou plusieurs unités à un même vendeur ou répartir ses achats
+            entre plusieurs vendeurs.
+        </p>
+        <p class="mb-0">
+            En cas d’exæquo, c’est-à-dire d’égalité de <strong>W</strong> pour différentes combinaisons
+            d'achat, la solution sélectionnée est celle qui maximise la valeur totale créée. S’il reste encore des
+            combinaisons
+            exæquo, la solution gagnante est tirée au sort parmi les meilleures solutions restantes.
+        </p>
+    </div>
+</div>
+
+<div class="instruction-card mb-4">
+    <div class="card-title-header">
+        <h3><i class="bi bi-calculator-fill text-primary"></i> Calcul de votre gain</h3>
+    </div>
+    <div class="card-body">
+        <ul class="mb-4">
+            <li class="mb-3">Si l’acheteur vous achète <em>q</em> unités à votre prix unitaire <em>p</em>,
+                vous recevez le prix unitaire demandé (<em>p</em>) duquel est déduit votre coût de
+                production, multiplié par le nombre d’unités souhaitées par l’acheteur (<em>q</em>).
+                Votre gain est donc :
+                <div class="alert alert-secondary text-center fw-bold mt-2 mb-0">
+                    gain = (p − coût) × q
+                </div>
+            </li>
+            <li>Si l’acheteur ne vous achète aucune unité, votre gain est de 0 €.
+            </li>
+        </ul>
+        <p class="mb-0 text-muted">
+            <em>Dans ce jeu, votre gain dépend de votre décision, mais aussi de celles des autres vendeurs de votre
+                groupe.
+                En effet, l’acheteur compare toutes les offres de tous les vendeurs pour sélectionner
+                celle qui maximise la valeur créée par euro dépensé.
+                En conséquence, proposer un prix plus élevé augmentera votre gain si votre offre est sélectionnée
+                mais réduit en même temps vos chances d’être sélectionné.</em>
+        </p>
+    </div>
+</div>
+
+<div class="instruction-card mb-4">
+    <div class="card-title-header">
+        <h3><i class="bi bi-clock-fill text-primary"></i> Déroulement d’une période </h3>
+    </div>
+    <div class="card-body">
+        <ol class="mb-4">
+            <li class="mb-2">L’ordinateur tire au sort un coût unitaire de production pour chaque vendeur. Notez que
+                les autres vendeurs de votre groupe peuvent avoir des coûts différents.
+            </li>
+            <li class="mb-2">Sur l’écran de décision, vous indiquez vos offres de prix dans les deux zones
+                en les saisissant dans une case ou en déplaçant un curseur sur une glissière.
+                Au moment de décider, vous ne savez pas encore dans quelle
+                zone vous serez affecté(e) : seule l’offre correspondant à la zone tirée au sort pour vous
+                sera retenue.
+            </li>
+            <li class="mb-2">L’ordinateur affecte aléatoirement 3 vendeurs en zone 1 et 2 vendeurs en zone 2.</li>
+            <li class="mb-3">L’ordinateur détermine l’offre ou les offres gagnante(s) et calcule les gains des
+                vendeurs.
+            </li>
+
+            {{ if is_unit or is_base }}
+            <li class="mb-3">Un écran récapitulatif affiche :
+                <ul>
+                    <li>votre coût, votre zone, votre offre de prix, le nombre d’unités que vous
+                        avez vendues et votre gain ;
+                    </li>
+                    <li>le nombre d’unités achetées par zone, la valeur totale créée, le budget total dépensé
+                        et le ratio <strong>W</strong> obtenu.
+                    </li>
+                </ul>
+            </li>
+            <p class="mb-3">
+                Voici un exemple d'écran de résultat d'une période (nous avons volontairement noirci certains
+                montants dans ces instructions pour ne pas influencer vos choix) :
+            </p>
+
+            <figure class="text-center mb-0">
+                <img src="{{ static 'FC_haies/ResultScreenUnit.png' }}"
+                     class="img-fluid img-thumbnail rounded shadow-sm" style="max-width:80%;">
+                <figcaption class="fst-italic mt-2 text-muted">Figure 3 : Exemple d’écran de résultat d'une période
+                </figcaption>
+            </figure>
+            {{ endif }}
+
+            {{ if is_comb }}
+            <li class="mb-3">Un écran récapitulatif affiche :
+                <ul>
+                    <li>votre coût, votre zone, vos offres de prix, le nombre d’unités que vous
+                        avez vendues et votre gain ;
+                    </li>
+                    <li>le nombre d’unités achetées par zone, la valeur totale créée, le budget total dépensé
+                        et le ratio <strong>W</strong> obtenu.
+                    </li>
+                </ul>
+            </li>
+            <p class="mb-3">
+                Voici un exemple d'écran de résultat d'une période (nous avons volontairement noirci
+                certains montants dans ces instructions pour ne pas influencer vos choix) :
+            </p>
+
+            <figure class="text-center mb-0">
+                <img src="{{ static 'FC_haies/ResultScreenCombin.png' }}"
+                     class="img-fluid img-thumbnail rounded shadow-sm" style="max-width:80%;">
+                <figcaption class="fst-italic mt-2 text-muted">Figure 3 : Exemple d’écran de résultat</figcaption>
+            </figure>
+            {{ endif }}
+        </ol>
+
+        <p class="mb-3">
+            La période suivante démarre dès que tous les participants ont cliqué sur le bouton pour continuer.
+        </p>
+        <p class="mb-0">
+            Ce jeu sera répété <strong class="text-primary">{{ C.NUM_ROUNDS }} fois</strong>, au cours
+            de {{ C.NUM_ROUNDS }} périodes.
+        </p>
+    </div>
+</div>
+
+<div class="alert alert-warning shadow-sm" role="alert">
+    <p class="mb-2">
+        Lorsque la {{ C.NUM_ROUNDS }}
+        <up>ème</up>
+        période sera achevée, la partie 1 sera terminée et vous recevrez les instructions
+        relatives à la partie 2 de l’expérience.
+    </p>
+    <hr>
+    <p class="mb-0">
+        <strong>Votre gain pour la partie 1</strong> sera la somme des gains obtenus dans {{ C.NUM_PAID_ROUNDS }}
+        périodes qui seront tirées au sort à la fin de l’expérience parmi les {{ C.NUM_ROUNDS }} périodes jouées
+        dans cette partie. Cette somme sera ensuite divisée par 3.
+    </p>
+</div>

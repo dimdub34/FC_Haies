@@ -1,0 +1,64 @@
+{{ block title }}
+{{ endblock }}
+
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'FC_final/style.css' }}">
+{{ endblock }}
+
+{{ block content }}
+<div class="container mt-2">
+    <div class="card form-container-card bg-white">
+        <div class="mb-4 text-center">
+            <p class="text-muted">Merci de remplir le formulaire ci-dessous.</p>
+            <hr class="w-25 mx-auto">
+        </div>
+
+        {{ if form.errors }}
+            <div class="alert alert-danger shadow-sm">
+                Veuillez corriger les erreurs indiquées ci-dessous.
+            </div>
+        {{ endif }}
+
+        <div class="form-content">
+            {{ for field in form }}
+                <div class="form-group-wrapper">
+                    <label class="col-form-label fw-bold mb-1" for="{{ field.id }}">
+                        {{ field.label }}
+                    </label>
+                    <div class="field-input">
+                        {{ field }}
+                    </div>
+                    {{ if field.errors }}
+                        <div class="text-danger small mt-1">{{ field.errors }}</div>
+                    {{ endif }}
+                </div>
+            {{ endfor }}
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+            <button class="otree-btn-next btn btn-primary px-5 shadow-sm">
+                Valider
+            </button>
+        </div>
+    </div>
+</div>
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{ static 'global/js/fill_auto.js' }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Ajout dynamique de classes Bootstrap aux inputs générés par oTree
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            if (!['checkbox', 'radio'].includes(input.type)) {
+                input.classList.add('form-control');
+            } else {
+                input.classList.add('form-check-input');
+            }
+        });
+
+        if (js_vars.fill_auto) fill_auto();
+    });
+</script>
+{{ endblock }}

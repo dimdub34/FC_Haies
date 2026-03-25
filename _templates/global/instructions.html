@@ -1,0 +1,31 @@
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'global/css/style.css' }}">
+{{ endblock }}
+
+{{ block title }}
+{{ if is_defined('instructions_template_title') }} {{ instructions_template_title }} {{ else }} Instructions {{ endif }}
+{{ endblock }}
+
+{{ block content }}
+
+<div class="card bg-light mb-3">
+    <div class="card-body">
+        {{ include instructions_template }}
+    </div>
+</div>
+
+{{ next_button }}
+
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{ static 'global/js/fill_auto.js' }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        if (js_vars?.fill_auto)
+            fill_auto();
+    });
+</script>
+{{ endblock }}
+
+

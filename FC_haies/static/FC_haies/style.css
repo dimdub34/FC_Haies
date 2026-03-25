@@ -1,0 +1,25 @@
+.offer-label {
+    min-width: 180px;
+    font-weight: 500;
+}
+
+.offer-input {
+    width: 90px;
+    text-align: center;
+}
+
+.profit-feedback {
+    margin-left: 190px;
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+
+.result-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.label-muted {
+    color: #6c757d;
+}
+

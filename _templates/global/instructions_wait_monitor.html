@@ -1,0 +1,28 @@
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'global/css/style.css' }}">
+{{ endblock }}
+
+{{ block title }}
+<span class="text-muted fw-bold"> Veuillez patienter &hellip;</span>
+{{ endblock }}
+
+{{ block content }}
+<div class="alert alert-warning" role="alert">
+    <p>
+        Nous attendons que tout le monde ait lu les instructions pour procéder à une relecture à
+        voix haute.
+    </p>
+</div>
+
+<div class="progress mb-4" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0"
+     aria-valuemax="100">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+</div>
+
+<div class="card bg-light mb-3">
+    <div class="card-body">
+        {{ include instructions_template }}
+    </div>
+</div>
+
+{{ endblock }}

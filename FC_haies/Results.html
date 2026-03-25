@@ -1,0 +1,166 @@
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'global/css/style.css' }}">
+<link rel="stylesheet" href="{{ static 'FC_haies/style.css' }}">
+{{ endblock }}
+
+{{ block title }}
+<span class="text-muted">Résultats</span>
+{{ endblock }}
+
+{{ block content }}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="m-0">Période {{ player.round_number }} sur {{ C.NUM_ROUNDS }}</h5>
+    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
+            data-bs-target="#modal_content">
+        <i class="bi bi-info-circle"></i> Instructions
+    </button>
+</div>
+
+<div class="alert alert-info shadow-sm mb-3">
+    <div class="row text-center align-items-center">
+        <div class="col-md-6 border-end">
+            <span class="label-muted me-2">Votre coût unitaire :</span>
+            <span class="fs-5 fw-bold">{{ player.cost }} €</span>
+        </div>
+        <div class="col-md-6">
+            <span class="label-muted me-2">Votre affectation :</span>
+            <span class="fs-5 fw-bold">Zone {{ player.zone }}</span>
+        </div>
+    </div>
+</div>
+
+{{ if player.decision_imputed }}
+<div class="alert alert-warning shadow-sm mb-3 py-2" role="alert">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <small><em>Attention : aucune décision n’a été soumise. Une offre automatique a été générée.</em></small>
+</div>
+{{ endif }}
+
+<div class="row g-3 mb-3">
+    <div class="col-md-6 d-flex flex-column">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-light fw-bold">
+                <i class="bi bi-pencil-square text-primary"></i> Votre offre retenue
+            </div>
+            <div class="card-body py-2">
+                {{ if subsession.treatment in ['unitaire', 'base'] }}
+                {{ if player.zone == 1 }}
+                <p class="mb-0 text-center">Prix unitaire proposé : <strong
+                        class="fs-5 text-primary">{{ player.unit_price_zone1 }} €</strong></p>
+                {{ else }}
+                <p class="mb-0 text-center">Prix unitaire proposé : <strong
+                        class="fs-5 text-primary">{{ player.unit_price_zone2 }} €</strong></p>
+                {{ endif }}
+
+                {{ else }} {# TREATMENT_COMB #}
+                <div class="row text-center g-2">
+                    {{ if player.zone == 1 }}
+                    <div class="col">
+                        <div class="label-muted">1 unité</div>
+                        <div class="fw-bold">{{ player.offer_1u_zone1 }} €</div>
+                    </div>
+                    <div class="col">
+                        <div class="label-muted">2 unités</div>
+                        <div class="fw-bold">{{ player.offer_2u_zone1 }} €</div>
+                    </div>
+                    <div class="col">
+                        <div class="label-muted">3 unités</div>
+                        <div class="fw-bold">{{ player.offer_3u_zone1 }} €</div>
+                    </div>
+                    {{ else }}
+                    <div class="col">
+                        <div class="label-muted">1 unité</div>
+                        <div class="fw-bold">{{ player.offer_1u_zone2 }} €</div>
+                    </div>
+                    <div class="col">
+                        <div class="label-muted">2 unités</div>
+                        <div class="fw-bold">{{ player.offer_2u_zone2 }} €</div>
+                    </div>
+                    {{ endif }}
+                </div>
+                {{ endif }}
+            </div>
+        </div>
+
+        {{ if player.units_sold > 0 }}
+        <div class="alert alert-success shadow-sm flex-grow-1 d-flex flex-column justify-content-center text-center mb-0 py-2">
+            <h5 class="text-success fw-bold mb-1"><i class="bi bi-cash-coin"></i> Félicitations !</h5>
+            <p class="mb-1">Vous avez vendu <strong class="text-success">{{ player.units_sold }}</strong>
+                unité{{ if player.units_sold > 1 }}s{{ endif }}.</p>
+            <div class="fs-5">
+                Gain = <strong class="text-success fw-bold">{{ player.payoff|to0 }}</strong>
+                <br><small class="text-muted" style="font-size: 0.7em;">({{ player.units_sold }} × ({{ player.unit_price_used }}
+                – {{ player.cost }}))</small>
+            </div>
+        </div>
+        {{ else }}
+        <div class="alert alert-secondary flex-grow-1 d-flex flex-column justify-content-center text-center shadow-sm mb-0 py-2">
+            <p class="mb-0 text-muted"><i class="bi bi-dash-circle"></i> Vous n’avez vendu aucune unité.<br>Gain :
+                <strong>{{ player.payoff|to0 }}</strong></p>
+        </div>
+        {{ endif }}
+
+    </div>
+
+    <div class="col-md-6 d-flex flex-column">
+
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-light fw-bold">
+                <i class="bi bi-bar-chart-fill text-primary"></i> Nombre d'unités achetées par zone
+            </div>
+            <div class="card-body py-2">
+                <div class="row text-center">
+                    <div class="col-6 border-end">
+                        <div class="label-muted">Zone 1</div>
+                        <div class="fw-bold">{{ group.z1_units }} unité{{ if group.z1_units > 1 }}s{{ endif }}</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="label-muted">Zone 2</div>
+                        <div class="fw-bold">{{ group.z2_units }} unité{{ if group.z2_units > 1 }}s{{ endif }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm flex-grow-1">
+            <div class="card-header bg-light fw-bold">
+                <i class="bi bi-calculator"></i> Résultats pour l'acheteur
+            </div>
+            <div class="card-body text-center d-flex flex-column justify-content-center py-2">
+                <div class="row mb-2">
+                    <div class="col-6 border-end">
+                        <div class="label-muted">Valeur créée</div>
+                        <div class="fw-bold">{{ group.total_value }}</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="label-muted">Total dépensé</div>
+                        <div class="fw-bold">{{ group.total_spent }} €</div>
+                    </div>
+                </div>
+                <div class="alert alert-primary mb-0 py-1 fw-bold shadow-inner">
+                    Indicateur W : {{ w_3 }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="text-center mt-3">
+    {{ next_button }}
+</div>
+
+{{ include "global/instructions_modal.html" }}
+
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{ static 'global/js/fill_auto.js' }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        if (js_vars?.fill_auto)
+            fill_auto();
+    });
+</script>
+{{ endblock }}

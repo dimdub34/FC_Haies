@@ -1,0 +1,107 @@
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'bret/bret.css'}}"/>
+{{ endblock }}
+
+{{ block title }}
+Partie 2
+{{ endblock }}
+
+{{ block content }}
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <p class="lead">Il y a 100 boîtes. Une boîte contient une bombe.</p>
+        <p class="text-muted">
+            Vous ne savez pas où est la bombe, elle peut être dans n'importe quelle boîte (tirage au sort par le
+            programme informatique).
+            Pour chaque boîte ouverte sans bombe, vous gagnez <strong>{{ C.BOX_VAL|cu }}</strong>.
+            Si vous ouvrez la bombe, vous gagnez <strong>{{ 0|cu }}</strong>.
+        </p>
+        <table id="table_boites" class="text-center mx-auto"></table>
+    </div>
+</div>
+
+<div class="card shadow-sm border-primary">
+    <div class="card-body text-center">
+        <label for="range_boites" class="form-label fw-bold">Combien de boîtes voulez-vous ouvrir ?</label>
+
+        <div class="d-flex align-items-center justify-content-center mb-3">
+            <span class="badge bg-secondary me-3 p-2">0</span>
+            <input type="range" min="0" max="100" value="0" name="n_boxes" class="slider" id="range_boites">
+            <span class="badge bg-secondary ms-3 p-2">100</span>
+        </div>
+
+        <div class="alert alert-info d-inline-block px-5">
+            Vous choisissez d'ouvrir : <span id="range_boites_out" class="fw-bold fs-4">0</span> boîte(s)
+        </div>
+
+        <div id="error_msg" class="form-control-errors d-none">
+            Veuillez déplacer le curseur pour valider votre choix.
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-end mt-4">
+    <button class="btn btn-primary btn-lg">Valider</button>
+</div>
+
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{ static 'global/js/fill_auto.js' }}"></script>
+<script>
+    let curseur_has_move = false;
+    const rangeInput = document.querySelector("#range_boites");
+    const output = document.querySelector("#range_boites_out");
+    const table_boites = document.querySelector("#table_boites");
+
+    // Génération de la grille
+    document.addEventListener("DOMContentLoaded", () => {
+        let compteur = 0;
+        for (let i = 0; i < 10; i++) {
+            let ligne = document.createElement("tr");
+            for (let j = 0; j < 10; j++) {
+                compteur++;
+                let cell = document.createElement("td");
+                cell.innerHTML = compteur;
+                ligne.appendChild(cell);
+            }
+            table_boites.appendChild(ligne);
+        }
+
+        if (js_vars.fill_auto)
+            fill_auto();
+    });
+
+    // Mise à jour dynamique
+    rangeInput.addEventListener("input", (e) => {
+        curseur_has_move = true;
+        const val = parseInt(e.target.value);
+        output.innerText = val;
+
+        // Cacher l'erreur si elle était visible
+        document.querySelector("#error_msg").classList.add("d-none");
+
+        // 1. Coloration dynamique de la barre du slider
+        const percentage = (val - e.target.min) / (e.target.max - e.target.min) * 100;
+        e.target.style.background = `linear-gradient(to right, #007bff ${percentage}%, #e9ecef ${percentage}%)`;
+
+        // 2. Mise à jour des boîtes
+        const cells = table_boites.querySelectorAll("td");
+        cells.forEach((cell, index) => {
+            if (index < val) {
+                cell.classList.add("cell-selected");
+            } else {
+                cell.classList.remove("cell-selected");
+            }
+        });
+    });
+
+    // Validation
+    document.querySelector(".btn-primary").addEventListener("click", (e) => {
+        if (!curseur_has_move) {
+            e.preventDefault();
+            document.querySelector("#error_msg").classList.remove("d-none");
+        }
+    });
+</script>
+{{ endblock }}

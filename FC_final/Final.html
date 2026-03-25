@@ -1,0 +1,67 @@
+<div class="container mt-4">
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Partie 1</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ participant.vars.FC_haies.txt_final|safe }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Partie 2</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ participant.vars.FC_bret.txt_final|safe }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info text-center py-4 mb-5">
+        <h4 class="mb-3"><i class="bi bi-wallet2"></i> Gain Final</h4>
+        <div class="fw-bold fs-5">
+            {{ participant.vars.FC_final.txt_final|safe }}
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h4 class="mb-3">Détails de la Partie 1</h4>
+        <div class="alert alert-light border shadow-sm small py-2">
+            <i class="bi bi-info-circle me-2"></i>
+            Les périodes surlignées en <strong>vert</strong> ont été tirées au sort pour le calcul de votre gain.
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle shadow-sm">
+                <thead class="table-dark">
+                <tr>
+                    <th scope="col">Période</th>
+                    <th scope="col">Zone</th>
+                    <th scope="col">Coût</th>
+                    <th scope="col">Unités vendues</th>
+                    <th scope="col">Prix de vente</th>
+                    <th scope="col">Gain</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{ for p in participant.vars.FC_haies.historique }}
+                <tr {{ if p.paid_round }}class="table-success fw-bold"{{ endif }}>
+                    <td>{{ p.round }}</td>
+                    <td>{{ p.zone }}</td>
+                    <td>{{ p.cost }}</td>
+                    <td>{{ p.units_sold }}</td>
+                    <td>{{ p.unit_price_used }}</td>
+                    <td>{{ p.payoff }}</td>
+                </tr>
+                {{ endfor }}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

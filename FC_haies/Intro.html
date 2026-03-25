@@ -1,0 +1,25 @@
+{{ block content }}
+
+<div class="alert alert-info" role="alert">
+    <p>
+        Cette expérience comporte deux parties.
+    </p>
+    <p>
+        <strong>Votre paiement</strong> à la fin de l’expérience sera composé du forfait de déplacement de
+        {{ session.config.participation_fee }} auquel sera ajouté la somme des gains des deux parties de l’expérience.
+    </p>
+</div>
+
+{{ next_button }}
+
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{ static 'global/js/fill_auto.js' }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        if (js_vars?.fill_auto)
+            fill_auto();
+    });
+</script>
+{{ endblock }}

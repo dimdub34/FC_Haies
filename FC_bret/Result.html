@@ -1,0 +1,97 @@
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'bret/bret.css'}}" />
+{{ endblock }}
+
+{{ block title }}
+Résultat
+{{ endblock }}
+
+{{ block content }}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body text-center">
+        <h5 class="card-title text-primary mb-4">Verdict</h5>
+
+        <div class="d-flex justify-content-center gap-4 mb-4">
+            <div class="text-center">
+                <small class="text-muted d-block">Boîtes ouvertes</small>
+                <span class="fs-4 fw-bold">{{ player.n_boxes }}</span>
+            </div>
+            <div class="text-center">
+                <small class="text-muted d-block">Position de la bombe</small>
+                <span class="fs-4 fw-bold text-secondary">{{ player.bomb_box }}</span>
+            </div>
+        </div>
+
+        {{ if not player.explode }}
+            <div class="alert alert-success border-success px-5 d-inline-block">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                Félicitations ! Vous avez évité la bombe. <br>
+                Votre gain est de <strong>{{ player.payoff }}</strong>.
+            </div>
+        {{ else }}
+            <div class="alert alert-danger border-danger px-5 d-inline-block">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Dommage, vous avez ouvert la bombe. <br>
+                Votre gain est de <strong>{{ player.payoff }}</strong>.
+            </div>
+        {{ endif }}
+
+        <div class="table-responsive mt-4">
+            <table id="table_boites" class="text-center mx-auto">
+                </table>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-end">
+    <button class="btn btn-primary btn-lg">Suivant</button>
+</div>
+
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{ static 'global/js/fill_auto.js' }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const table_boites = document.querySelector("#table_boites");
+        const n_boxes = Number(js_vars.n_boxes);
+        const bomb_box = Number(js_vars.bomb_box);
+        const did_explode = Boolean(js_vars.explode);
+
+        let compteur = 0;
+        for (let i = 0; i < 10; i++) {
+            let ligne = document.createElement("tr");
+            for (let j = 0; j < 10; j++) {
+                compteur++;
+                let cell = document.createElement("td");
+                cell.innerHTML = compteur;
+
+                // 1. Colorer les boîtes ouvertes par le joueur
+                if (compteur <= n_boxes) {
+                    cell.classList.add("cell-selected");
+                }
+
+                // 2. Marquer la position de la bombe
+                if (compteur === bomb_box) {
+                    cell.innerHTML = ''; // Enlever le numéro
+                    cell.classList.remove("cell-selected"); // Priorité à l'état de la bombe
+
+                    // Appliquer le style de bombe (rouge si explosion, jaune sinon)
+                    cell.classList.add(did_explode ? "cell-explode" : "cell-bomb");
+
+                    let bombImage = document.createElement("img");
+                    bombImage.src = "{{ static 'bret/bomb.png' }}";
+                    bombImage.className = "img-bomb";
+                    cell.appendChild(bombImage);
+                }
+                ligne.appendChild(cell);
+            }
+            table_boites.appendChild(ligne);
+        }
+
+        if (js_vars.fill_auto)
+            fill_auto();
+    });
+</script>
+{{ endblock }}

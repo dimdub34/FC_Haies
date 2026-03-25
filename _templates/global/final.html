@@ -1,0 +1,20 @@
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'global/css/style.css' }}">
+{{ endblock }}
+
+{{ block title }}
+Fin de l'expérience
+{{ endblock }}
+
+{{ block content }}
+
+<p class="mb-3">
+    L'expérience est terminée, merci pour votre participation !
+</p>
+
+<div class="border p-2 mb-3">
+{{ include final_template }}
+</div>
+
+{{ endblock }}
+

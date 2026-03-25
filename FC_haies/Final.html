@@ -1,0 +1,25 @@
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'global/css/style.css' }}">
+<link rel="stylesheet" href="{{ static 'FC_haies/style.css' }}">
+{{ endblock }}
+
+{{ block title }}
+<span class="text-muted">Fin de la partie 1</span>
+{{ endblock }}
+
+{{ block content }}
+<div class="alert alert-info" role="alert">
+    <p>
+        La partie 1 de l'expérience est terminée. <br>
+        La liste des périodes tirées au sort pour le calcul de votre gain pour cette partie sera affichée après
+        la partie 2.
+    </p>
+</div>
+
+{{ next_button }}
+
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{ static 'global/js/fill_auto.js' }}"></script>
+{{ endblock }}

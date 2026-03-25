@@ -1,0 +1,42 @@
+{{ block styles }}
+<link rel="stylesheet" href="{{ static 'global/css/style.css' }}">
+{{ endblock }}
+
+{{ block title }}
+Fin de l'expérience
+{{ endblock }}
+
+{{ block content }}
+
+<p class="mb-3">
+    L'expérience est terminée, merci pour votre participation !
+</p>
+
+<div class="border p-2 mb-3">
+    {{ include final_template }}
+</div>
+
+<hr>
+
+<p class="text-muted mb-3">
+    Votre paiement se fera par virement bancaire via la plateforme S2C2H du CNRS. <br>
+    Veuillez cliquer sur le bouton ci-dessous pour remplir le formulaire pour le paiement de vos gains. <br>
+    Si vous avez des questions, n'hésitez pas à contacter l'expérimentateur.
+</p>
+<button type="button" class="btn btn-outline-primary" id="btn_payment">
+    Remplir le formulaire pour le paiement
+</button>
+
+{{ endblock }}
+
+{{ block scripts }}
+<script src="{{ static 'global/js/s2c2h.js' }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('#btn_payment').addEventListener('click', () => {
+            fill_payment_form();
+        });
+    });
+</script>
+
+{{ endblock }}
