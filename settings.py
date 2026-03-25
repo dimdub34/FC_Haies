@@ -8,6 +8,7 @@ SESSION_CONFIG_DEFAULTS = dict(
     real_world_currency_per_point=1.00,
     participation_fee=5,
     fill_auto=False,
+    test=False
 )
 DEMO_PAGE_INTRO_HTML = (
     f"<div class='d-flex align-items-center justify-content-center' style='min-height: 150px;'>"

@@ -366,7 +366,15 @@ class InstructionsWaitMonitor(MyPage):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.round_number == 1
+        return player.round_number == 1 and not player.session.config.get("test", False)
+
+
+class InstructionsWaitForAll(WaitPage):
+    wait_for_all_groups = True
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1 and player.session.config.get("test", False)
 
 
 class Understanding(MyPage):
@@ -477,7 +485,7 @@ class Final(Page):
 
 page_sequence = [
     Intro,
-    Instructions, InstructionsWaitMonitor,
+    Instructions, InstructionsWaitMonitor, InstructionsWaitForAll,
     Understanding, UnderstandingWaitForAll,
     Decision, DecisionWaitForGroup,
     Results, ResultsWaitForAll,
