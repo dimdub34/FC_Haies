@@ -59,7 +59,7 @@
     <div class="card-body">
         {{ if is_unit or is_base }}
         <p class="mb-3">
-            Vous devez faire une <strong>offre de prix unitaire</strong> en fonction de votre coût unitaire de
+            Vous devez faire une <strong>offre de prix unitaires</strong> en fonction de votre coût unitaire de
             production.
             Vous ne pouvez pas définir un prix pour un lot d’unités.
             C’est l’acheteur qui décide du nombre d’unités qu’il souhaite vous acheter.
@@ -110,8 +110,7 @@
             production et du nombre d’unités.
         </p>
         <p class="mb-3">
-            Vous pouvez augmenter ou réduire le prix unitaire en fonction de la quantité,
-            ou garder le même prix unitaire. Vous êtes libre de fixer vos prix.
+            Vous pouvez proposer des prix unitaires identiques ou différents en fonction du nombre d'unités.
             Toutefois, c’est l’acheteur qui décide du nombre d’unités qu’il souhaite vous acheter.
         </p>
         <p class="mb-2">Remarques :</p>
@@ -134,11 +133,10 @@
                     class="text-primary">200 €</strong>),
                 il vous sera impossible de vendre 3 unités dans la zone 1. Dans ce cas, un message
                 « hors budget » s’affichera, mais pour des raisons techniques, nous vous demandons
-                néanmoins de saisir un prix si la situation se présente.
+                néanmoins de saisir un prix pour 3 unités.
             </li>
-            <li>Vous disposerez toujours des présentes instructions sur cet écran
-                en
-                cliquant sur un bouton « Voir/masquer les instructions » (en dessous de « Valider »).
+            <li>Vous disposerez toujours des présentes instructions cliquant sur le bouton
+                « Instructions ».
             </li>
         </ul>
         <p class="mb-3">
@@ -273,8 +271,8 @@
                 </ul>
             </li>
             <p class="mb-3">
-                Voici un exemple d'écran de résultat d'une période (nous avons volontairement noirci certains
-                montants dans ces instructions pour ne pas influencer vos choix) :
+                Voici un exemple d'écran de résultat d'une période (nous avons volontairement supprimé certains
+                nombres dans ces instructions pour ne pas influencer vos choix) :
             </p>
 
             <figure class="text-center mb-0">
@@ -330,6 +328,6 @@
     <p class="mb-0">
         <strong>Votre gain pour la partie 1</strong> sera la somme des gains obtenus dans {{ C.NUM_PAID_ROUNDS }}
         périodes qui seront tirées au sort à la fin de l’expérience parmi les {{ C.NUM_ROUNDS }} périodes jouées
-        dans cette partie. Cette somme sera ensuite divisée par 3.
+        dans cette partie. Cette somme sera ensuite divisée par {{ C.DIVISION_PAYOFF }}.
     </p>
 </div>

@@ -3,7 +3,7 @@ from pathlib import Path
 
 from otree.api import *
 
-# from _commons import S2C2H_UM
+from _commons import S2C2H_UM
 
 app_name = Path(__file__).parent.name
 

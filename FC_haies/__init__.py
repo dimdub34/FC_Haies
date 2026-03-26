@@ -23,11 +23,11 @@ class C(BaseConstants):
     PLAYERS_ZONE_2 = 2
     PLAYERS_PER_GROUP = PLAYERS_ZONE_1 + PLAYERS_ZONE_2
     NUM_ROUNDS = 12
-    NUM_PAID_ROUNDS = 9
+    NUM_PAID_ROUNDS = 10
     COST_MIN = 50
     COST_MAX = 100
     BUYER_BUDGET = 200
-    DIVISION_PAYOFF = 3
+    DIVISION_PAYOFF = 2
 
     # Valeur créée dans UNE zone selon nb d’unités dans la zone
     VALUES = {1: 100, 2: 250, 3: 375}
@@ -244,6 +244,7 @@ class Player(BasePlayer):
     q6_faults = models.IntegerField()
     q7_faults = models.IntegerField()
     q8_faults = models.IntegerField()
+    q9_faults = models.IntegerField()
     total_faults = models.IntegerField(initial=0)
 
     # ===== Traitement COMBINATOIRE (menus par lots) =====
@@ -496,14 +497,15 @@ page_sequence = [
 def custom_export(players):
     # En-têtes
     yield [
-        'session', 'participant', 'treatment', 'num_session',
+        'session', 'participant', 'participant_id_in_sub', "participant_id_in_group",
+        'treatment', 'num_session',
         'round_number', 'zone', 'cout', 'is_paid',
         'offre_1u_z1', 'offre_2u_z1', 'offre_3u_z1', 'offre_1u_z2', 'offre_2u_z2',
         'prix_unitaire_z1', 'prix_unitaire_z2',
         'unites_vendues', 'prix_applique', 'payoff',
         'total_faults_comprehension',
         # Variables du groupe
-        'group_unites_achetees', 'group_depense_totale', 'group_valeur_totale', 'group_W', 'group_z1_units',
+        'group_id', 'group_unites_achetees', 'group_depense_totale', 'group_valeur_totale', 'group_W', 'group_z1_units',
         'group_z2_units',
         # Variables de la partie 2 (BRET) extraites de participant.vars
         'bret_n_boxes',
@@ -520,7 +522,8 @@ def custom_export(players):
         demog = p.participant.vars.get('demog', {})
 
         yield [
-            subsession.session.code, participant.code, subsession.treatment, subsession.numsession,
+            subsession.session.code, participant.code, p.id_in_subsession, p.id_in_group,
+            subsession.treatment, subsession.numsession,
             p.round_number, p.zone, p.cost, p.paid_round,
             # Offres (selon traitement)
             p.offer_1u_zone1, p.offer_2u_zone1, p.offer_3u_zone1,
@@ -533,8 +536,8 @@ def custom_export(players):
             # Compréhension (disponible au round 1)
             p.in_round(1).total_faults,
             # variables group
-            p.group.units_bought, p.group.total_spent, p.group.total_value, p.group.W, p.group.z1_units,
-            p.group.z2_units,
+            f"{p.session.code}g{p.group.id_in_subsession}", p.group.units_bought, p.group.total_spent,
+            p.group.total_value, p.group.W, p.group.z1_units, p.group.z2_units,
             # Partie 2 (BRET)
             bret.get("n_boxes", "N/A"),
             # Gains finaux

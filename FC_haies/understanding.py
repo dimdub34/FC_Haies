@@ -86,6 +86,14 @@ def get_understanding(params=None):
             "explication": "La réponse est « A ». Acheter 3 unités dans la même zone crée une valeur de 375 "
                            "(3 × 100 + 75). Acheter 2 unités dans une zone et 1 unité dans l’autre crée une valeur totale de 350 "
                            "(250 + 100)."
+        },
+        {
+            "id": "9",
+            "question": "Acheter plus d'unités crée plus de valeur donc augmente nécessairement W.",
+            "propositions": ["Vrai", "Faux"],
+            "solution": 1,
+            "explication" : "La réponse est « Faux ». W dépend aussi de la dépense totale. En effet, l’acheteur "
+                            "cherche à maximiser la valeur qu’il tire de ses achats par euro dépensé."
         }
     ]
     return understanding

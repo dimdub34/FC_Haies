@@ -40,7 +40,8 @@ Questionnaire de compréhension
                 Ce n'est pas la bonne réponse. Veuillez relire les instructions.
             </div>
             <div class="alert alert-success m-0 rounded-0" style="display: none;" id="success_{{ question.id }}">
-                <i class="bi bi-check-circle-fill"></i> Correct !
+                <i class="bi bi-check-circle-fill"></i> Correct ! <br>
+                {{ if is_defined('question.explication') }}{{ question.explication|safe }}{{ endif }}
             </div>
         </div>
     </div>
