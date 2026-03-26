@@ -215,10 +215,10 @@
     </div>
 </div>
 
-<div class="alert alert-warning mb-4" role="alert">
+<div class="alert alert-warning shadow-sm mb-4" role="alert">
     <p>
-        Ce jeu sera répété <strong class="text-primary">{{ C.NUM_ROUNDS }} fois</strong>, au cours
-        de {{ C.NUM_ROUNDS }} périodes.
+        Ce jeu sera répété <strong>{{ C.NUM_ROUNDS }} fois</strong>, au cours
+        de <strong class="text-primary">{{ C.NUM_ROUNDS }} périodes</strong>.
     </p>
 </div>
 
@@ -267,7 +267,7 @@
             nombres dans ces instructions pour ne pas influencer vos choix) :
         </p>
 
-        <figure class="text-center mb-0">
+        <figure class="text-center mb-3">
             {{ if is_unit or is_base }}
             <img src="{{ static 'FC_haies/ResultScreenUnit.png' }}"
                  class="img-fluid img-thumbnail rounded shadow-sm" style="max-width:80%;"
