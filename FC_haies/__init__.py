@@ -81,7 +81,6 @@ def creating_session(subsession: Subsession):
 
     if subsession.round_number == 1:
         subsession.session.vars["understanding"] = get_understanding()
-        subsession.group_randomly(fixed_id_in_group=True)  # formation aléatoire des groupes mais on garde les id_in_group
 
     groups = subsession.get_groups()
     players = subsession.get_players()
@@ -89,24 +88,26 @@ def creating_session(subsession: Subsession):
     # générateurs aléatoires groupes
     for group in groups:
         if group.round_number == 1:
-            # pour les zones
+            # pour les zones -> fonction du group_id
             rng_zone = random.Random(
                 f"seed={subsession.seed}|numsession={subsession.numsession}|group={group.id_in_subsession}|zones")
             group.session.vars[f"g{group.id_in_subsession}_rng_zone"] = rng_zone
-            # pour les exaequo
-            rng_tie = random.Random(
-                f"seed={subsession.seed}|numsession={subsession.numsession}|group={group.id_in_subsession}|tie")
-            group.session.vars[f"g{group.id_in_subsession}_rng_tie"] = rng_tie
+            # pour les exaequo -> fonction du group et du round
+        rng_tie = random.Random(
+            f"seed={subsession.seed}|numsession={subsession.numsession}|group={group.id_in_subsession}|round={group.round_number}|tie")
+        group.session.vars[f"g{group.id_in_subsession}_r{group.round_number}_rng_tie"] = rng_tie
 
     # préparation players
     for p in players:
         if p.round_number == 1:
+            # pour les coûts -> fonction du groupe et de l'id dans le groupe
             rng_cost = random.Random(
-                f"seed={subsession.seed}|numsession={subsession.numsession}|id={p.id_in_subsession}|costs")
+                f"seed={subsession.seed}|numsession={subsession.numsession}|group={p.group.id_in_subsession}|id={p.id_in_group}|costs")
             p.participant.vars["cost_schedule"] = make_balanced_cost_schedule(
                 random_gen=rng_cost)  # génération des coûts
+            # pour les périodes payées -> fonction du groupe et de l'id dans le groupe
             rnd_paid = random.Random(
-                f"seed={subsession.seed}|numsession={subsession.numsession}|id={p.id_in_subsession}|paid")
+                f"seed={subsession.seed}|numsession={subsession.numsession}|group={p.group.id_in_subsession}|id={p.id_in_group}|paid")
             p.participant.vars["paid_rounds"] = rnd_paid.sample(range(1, C.NUM_ROUNDS + 1), C.NUM_PAID_ROUNDS)
         p.cost = p.participant.vars["cost_schedule"][subsession.round_number - 1]
         p.paid_round = p.round_number in p.participant.vars["paid_rounds"]
@@ -204,7 +205,7 @@ class Group(BaseGroup):
         max_score = max(valid_combos, key=lambda x: (x['W'], x['val']))
         # ex-aequo éventuels (si len(ties) > 1)
         ties = [c for c in valid_combos if (c['W'], c['val']) == (max_score['W'], max_score['val'])]
-        rng_tie = self.session.vars[f"g{self.id_in_subsession}_rng_tie"]
+        rng_tie = self.session.vars[f"g{self.id_in_subsession}_r{self.round_number}_rng_tie"]
         best = rng_tie.choice(ties)
 
         # Enregistrement des données de l'Acheteur (Groupe)
