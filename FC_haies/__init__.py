@@ -81,7 +81,7 @@ def creating_session(subsession: Subsession):
 
     if subsession.round_number == 1:
         subsession.session.vars["understanding"] = get_understanding()
-        subsession.group_randomly()  # formation aléatoire des groupes
+        subsession.group_randomly(fixed_id_in_group=True)  # formation aléatoire des groupes mais on garde les id_in_group
 
     groups = subsession.get_groups()
     players = subsession.get_players()
