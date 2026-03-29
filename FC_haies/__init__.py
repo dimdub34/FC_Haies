@@ -92,10 +92,17 @@ def creating_session(subsession: Subsession):
             rng_zone = random.Random(
                 f"seed={subsession.seed}|numsession={subsession.numsession}|group={group.id_in_subsession}|zones")
             group.session.vars[f"g{group.id_in_subsession}_rng_zone"] = rng_zone
-            # pour les exaequo -> fonction du group et du round
+        # pour les exaequo -> fonction du group et du round
         rng_tie = random.Random(
             f"seed={subsession.seed}|numsession={subsession.numsession}|group={group.id_in_subsession}|round={group.round_number}|tie")
         group.session.vars[f"g{group.id_in_subsession}_r{group.round_number}_rng_tie"] = rng_tie
+        # affectation des zones
+        rng_zone = subsession.session.vars[f"g{group.id_in_subsession}_rng_zone"]
+        g_players = group.get_players()
+        zone1_players = rng_zone.sample(g_players, 3)
+        for p in g_players:
+            p.zone = 1 if p in zone1_players else 2
+        group.zone_assignment_json = json.dumps({p.id_in_group: p.zone for p in g_players})
 
     # préparation players
     for p in players:
@@ -111,15 +118,6 @@ def creating_session(subsession: Subsession):
             p.participant.vars["paid_rounds"] = rnd_paid.sample(range(1, C.NUM_ROUNDS + 1), C.NUM_PAID_ROUNDS)
         p.cost = p.participant.vars["cost_schedule"][subsession.round_number - 1]
         p.paid_round = p.round_number in p.participant.vars["paid_rounds"]
-
-    # affectation des zones
-    for g in groups:
-        rng_zone = subsession.session.vars[f"g{g.id_in_subsession}_rng_zone"]
-        g_players = g.get_players()
-        zone1_players = rng_zone.sample(g_players, 3)
-        for p in g_players:
-            p.zone = 1 if p in zone1_players else 2
-        g.zone_assignment_json = json.dumps({p.id_in_group: p.zone for p in g_players})
 
 
 class Group(BaseGroup):
